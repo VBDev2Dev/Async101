@@ -5,6 +5,7 @@ Public Class Form1
     Private WithEvents Log As New BindingList(Of LogMessageEventArgs)
     Private ReadOnly logStore As New Concurrent.ConcurrentQueue(Of LogMessageEventArgs)
     Dim clicks As Guid = Guid.NewGuid
+    Private ReadOnly fls As New Dictionary(Of String, FileGenerationInfo)
     Private Sub btnGui_Click(sender As Object, e As EventArgs) Handles btnGui.Click
         Dim id = tstAsync.Broadcast($"{NameOf(btnGui)} clicked.", clicks)
         tstAsync.Wait10()
@@ -16,10 +17,24 @@ Public Class Form1
         Await tstAsync.Wait10Async
         tstAsync.Broadcast($"{NameOf(btnAsyncDelay)} done.", clicks, id, True) ' excluding because this is work that contains all the other work.  
     End Sub
+    Private Async Sub btnFiles_Click(sender As Object, e As EventArgs) Handles btnFiles.Click
+        Dim id = tstAsync.Broadcast($"{NameOf(btnFiles)} clicked.", clicks)
+        Dim prog As New Progress(Of FileGenerationInfo)(Sub(info)
+                                                            fls.Add(info.FilePath, info)
+                                                        End Sub)
+        Dim generated = Await Task.Run(Async Function()
+
+                                           Return Await tstAsync.GenerateFilesAsync(prog)
+                                       End Function)
+        tstAsync.Broadcast($"{NameOf(btnFiles)} done.", clicks, id, True) ' excluding because this is work that contains all the other work.  
+
+    End Sub
 
     Private Sub tmrTime_Tick(sender As Object, e As EventArgs) Handles tmrTime.Tick
         lblTime.Text = Now.ToLongTimeString
     End Sub
+
+
 
     Private Sub tstAsync_BroadcastMessage(sender As Object, e As LogMessageEventArgs) Handles tstAsync.BroadcastMessage
         logStore.Enqueue(e)
