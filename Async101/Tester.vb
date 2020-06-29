@@ -67,7 +67,7 @@ Public Class Tester
         Dim work = Broadcast($"Creating {pth}.", id)
         Using strm As New IO.FileStream(pth, FileMode.Create, FileAccess.Write)
 
-            For x As Integer = 0 To 9 ' 10 10MB writes to file
+            For x As Integer = 0 To 9 ' 10 50MiB writes to file
 
                 Broadcast("Generating data", id)
                 Dim data = Await GenerateFileDataAsync()
