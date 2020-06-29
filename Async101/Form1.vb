@@ -126,8 +126,9 @@ Public Class Form1
 
             Dim pth As String = Path.Combine(fldr, $"{Now.Ticks}.log")
             Dim id As Guid = Guid.NewGuid
-            Dim newLog As New List(Of LogMessageEventArgs)
-            newLog.Add(New LogMessageEventArgs($"Writting Log to {pth}", id))
+            Dim newLog As New List(Of LogMessageEventArgs) From {
+                New LogMessageEventArgs($"Writting Log to {pth}", id)
+            }
             ' log = newLog.Concat(log)
             Dim entries = log.GroupBy(Function(m) m.GroupID).OrderBy(Function(ms) ms.Min(Function(m) m.Time))
             Dim totalTime = TimeSpan.Zero
