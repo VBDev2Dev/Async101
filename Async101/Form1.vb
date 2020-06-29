@@ -45,14 +45,14 @@ Public Class Form1
         MessageEventArgsBindingSource.DataSource = Log
         tstAsync.Broadcast("Running in Gui thread.  Form Loaded")
     End Sub
-
+    Dim limit As TimeSpan = TimeSpan.FromMilliseconds(200)
     Sub UpdateLog(Optional EmptyLog As Boolean = False)
         Dim tm As Date = Now
 
         Dim empty As Boolean = logStore.IsEmpty
         If empty Then Return
         lbLog.BeginUpdate()
-        While Not logStore.IsEmpty AndAlso (EmptyLog OrElse Now - tm < TimeSpan.FromMilliseconds(200))
+        While Not logStore.IsEmpty AndAlso (EmptyLog OrElse Now - tm < limit)
             Dim msg As LogMessageEventArgs = Nothing
             If logStore.TryDequeue(msg) Then
                 Log.Add(msg)
