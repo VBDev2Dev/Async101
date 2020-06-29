@@ -89,9 +89,9 @@ Public Class Tester
     End Function
 
     Public Function Broadcast(message As String, Optional ID As Guid? = Nothing, Optional EndID As Guid? = Nothing, Optional Exclude As Boolean = False) As Guid
-
-        Dim evnt As LogMessageEventArgs = New LogMessageEventArgs(message, ID, EndID)
-        evnt.ExcludeTimeInTotal = Exclude
+        Dim evnt As New LogMessageEventArgs(message, ID, EndID) With {
+            .ExcludeTimeInTotal = Exclude
+        }
         OnBroadcast(evnt)
         Return evnt.ID
     End Function
